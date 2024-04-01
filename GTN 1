@@ -1,0 +1,266 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyPXWSaJrQKDqG9yo88K3/vK",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/Kim9080/GTN-data/blob/main/GTN%201\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!pip install plotly\n",
+        "\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "Zkf6WrYhDbSE",
+        "outputId": "493cd507-fefe-4d46-fe8b-32c71965886e"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Requirement already satisfied: plotly in /usr/local/lib/python3.10/dist-packages (5.15.0)\n",
+            "Requirement already satisfied: tenacity>=6.2.0 in /usr/local/lib/python3.10/dist-packages (from plotly) (8.2.3)\n",
+            "Requirement already satisfied: packaging in /usr/local/lib/python3.10/dist-packages (from plotly) (24.0)\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# @title Default title text\n",
+        "import plotly.graph_objects as go\n",
+        "from plotly.subplots import make_subplots\n",
+        "\n",
+        "# Sample data for demonstration (simplified for brevity)\n",
+        "# Replace this with your actual data\n",
+        "categories = ['Last pregnancy interval (months)', 'Antecedent pregnancy', 'ECOG status', 'Pretreatment HCG levels', 'FIGO stage', 'WHO prognostic score']\n",
+        "sub_categories = ['0-4', '5-8', '>8', 'Spontaneous abortion', 'Term pregnancy', 'Ectopic pregnancy', 'Molar pregnancy', '0-1', '2-3', '>3', '1,000 - 10,000', '10,001≤ 100,000', '>100,000', 'I', 'II', 'III', 'IV', 'High Risk (7-12)', 'Ultra-High Risk (≥ 13)']\n",
+        "alive_percentages = [78.9, 15.5, 5.6, 21.1, 18.3, 0, 60.6, 74.6, 19.7, 5.6, 18.3, 36.6, 45.1, 54.9, 11.3, 21.1, 12.7, 90.1, 9.9]\n",
+        "died_percentages = [32.3, 22.6, 45.2, 38.7, 19.4, 3.2, 38.7, 22.6, 67.7, 9.7, 9.7, 6.5, 83.9, 0, 16.1, 41.9, 41.9, 48.4, 51.6]\n",
+        "\n",
+        "# Sites of metastasis data\n",
+        "sites_of_metastasis = ['Lungs', 'Vagina', 'Liver', 'Brain', 'Gastrointestinal tract', 'Spine']\n",
+        "metastasis_alive = [20, 5, 2, 3, 3, 0]\n",
+        "metastasis_died = [19, 7, 9, 8, 2, 1]\n",
+        "metastasis_total = [39, 12, 11, 11, 5, 1]\n",
+        "\n",
+        "# Initialize subplot figure with 2 columns: one for bar graphs, one for pie charts\n",
+        "fig = make_subplots(rows=len(categories), cols=2, specs=[[{'type': 'bar'}, {'type': 'pie'}]] * len(categories),\n",
+        "                    subplot_titles=[*categories, 'Sites of Metastasis (Alive)', 'Sites of Metastasis (Died)', 'Sites of Metastasis (Total)'])\n",
+        "\n",
+        "# Add bar graphs for each category\n",
+        "for i, category in enumerate(categories, start=1):\n",
+        "    fig.add_trace(go.Bar(x=sub_categories, y=alive_percentages, name='Alive (%)', marker_color='green'), row=i, col=1)\n",
+        "    fig.add_trace(go.Bar(x=sub_categories, y=died_percentages, name='Died (%)', marker_color='red'), row=i, col=1)\n",
+        "\n",
+        "# Add pie charts for Sites of Metastasis\n",
+        "fig.add_trace(go.Pie(labels=sites_of_metastasis, values=metastasis_alive, name='Alive, n=71'), row=1, col=2)\n",
+        "fig.add_trace(go.Pie(labels=sites_of_metastasis, values=metastasis_died, name='Died, n=31'), row=2, col=2)\n",
+        "fig.add_trace(go.Pie(labels=sites_of_metastasis, values=metastasis_total, name='Total, n=98'), row=3, col=2)\n",
+        "\n",
+        "# Update layout for a cleaner look\n",
+        "fig.update_layout(height=3000, showlegend=True, title_text=\"Clinical Characteristics of Patients with High and Ultrahigh Risk GTN\")\n",
+        "\n",
+        "# Save the plot as an HTML file\n",
+        "html_file = 'clinical_characteristics_separate_subplots.html'\n",
+        "fig.write_html(html_file)\n",
+        "\n",
+        "# Show the figure\n",
+        "fig.show()\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 1000
+        },
+        "id": "ow9zKaT3DvbV",
+        "outputId": "2563bc93-3958-4251-873c-7124388f794e"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/html": [
+              "<html>\n",
+              "<head><meta charset=\"utf-8\" /></head>\n",
+              "<body>\n",
+              "    <div>            <script src=\"https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG\"></script><script type=\"text/javascript\">if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: \"STIX-Web\"}});}</script>                <script type=\"text/javascript\">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>\n",
+              "        <script charset=\"utf-8\" src=\"https://cdn.plot.ly/plotly-2.24.1.min.js\"></script>                <div id=\"54112b7c-b011-4f10-bd4a-96541ca92aa8\" class=\"plotly-graph-div\" style=\"height:3000px; width:100%;\"></div>            <script type=\"text/javascript\">                                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById(\"54112b7c-b011-4f10-bd4a-96541ca92aa8\")) {                    Plotly.newPlot(                        \"54112b7c-b011-4f10-bd4a-96541ca92aa8\",                        [{\"marker\":{\"color\":\"green\"},\"name\":\"Alive (%)\",\"x\":[\"0-4\",\"5-8\",\"\\u003e8\",\"Spontaneous abortion\",\"Term pregnancy\",\"Ectopic pregnancy\",\"Molar pregnancy\",\"0-1\",\"2-3\",\"\\u003e3\",\"1,000 - 10,000\",\"10,001\\u2264 100,000\",\"\\u003e100,000\",\"I\",\"II\",\"III\",\"IV\",\"High Risk (7-12)\",\"Ultra-High Risk (\\u2265 13)\"],\"y\":[78.9,15.5,5.6,21.1,18.3,0,60.6,74.6,19.7,5.6,18.3,36.6,45.1,54.9,11.3,21.1,12.7,90.1,9.9],\"type\":\"bar\",\"xaxis\":\"x\",\"yaxis\":\"y\"},{\"marker\":{\"color\":\"red\"},\"name\":\"Died (%)\",\"x\":[\"0-4\",\"5-8\",\"\\u003e8\",\"Spontaneous abortion\",\"Term pregnancy\",\"Ectopic pregnancy\",\"Molar pregnancy\",\"0-1\",\"2-3\",\"\\u003e3\",\"1,000 - 10,000\",\"10,001\\u2264 100,000\",\"\\u003e100,000\",\"I\",\"II\",\"III\",\"IV\",\"High Risk (7-12)\",\"Ultra-High Risk (\\u2265 13)\"],\"y\":[32.3,22.6,45.2,38.7,19.4,3.2,38.7,22.6,67.7,9.7,9.7,6.5,83.9,0,16.1,41.9,41.9,48.4,51.6],\"type\":\"bar\",\"xaxis\":\"x\",\"yaxis\":\"y\"},{\"marker\":{\"color\":\"green\"},\"name\":\"Alive (%)\",\"x\":[\"0-4\",\"5-8\",\"\\u003e8\",\"Spontaneous abortion\",\"Term pregnancy\",\"Ectopic pregnancy\",\"Molar pregnancy\",\"0-1\",\"2-3\",\"\\u003e3\",\"1,000 - 10,000\",\"10,001\\u2264 100,000\",\"\\u003e100,000\",\"I\",\"II\",\"III\",\"IV\",\"High Risk (7-12)\",\"Ultra-High Risk (\\u2265 13)\"],\"y\":[78.9,15.5,5.6,21.1,18.3,0,60.6,74.6,19.7,5.6,18.3,36.6,45.1,54.9,11.3,21.1,12.7,90.1,9.9],\"type\":\"bar\",\"xaxis\":\"x2\",\"yaxis\":\"y2\"},{\"marker\":{\"color\":\"red\"},\"name\":\"Died (%)\",\"x\":[\"0-4\",\"5-8\",\"\\u003e8\",\"Spontaneous abortion\",\"Term pregnancy\",\"Ectopic pregnancy\",\"Molar pregnancy\",\"0-1\",\"2-3\",\"\\u003e3\",\"1,000 - 10,000\",\"10,001\\u2264 100,000\",\"\\u003e100,000\",\"I\",\"II\",\"III\",\"IV\",\"High Risk (7-12)\",\"Ultra-High Risk (\\u2265 13)\"],\"y\":[32.3,22.6,45.2,38.7,19.4,3.2,38.7,22.6,67.7,9.7,9.7,6.5,83.9,0,16.1,41.9,41.9,48.4,51.6],\"type\":\"bar\",\"xaxis\":\"x2\",\"yaxis\":\"y2\"},{\"marker\":{\"color\":\"green\"},\"name\":\"Alive (%)\",\"x\":[\"0-4\",\"5-8\",\"\\u003e8\",\"Spontaneous abortion\",\"Term pregnancy\",\"Ectopic pregnancy\",\"Molar pregnancy\",\"0-1\",\"2-3\",\"\\u003e3\",\"1,000 - 10,000\",\"10,001\\u2264 100,000\",\"\\u003e100,000\",\"I\",\"II\",\"III\",\"IV\",\"High Risk (7-12)\",\"Ultra-High Risk (\\u2265 13)\"],\"y\":[78.9,15.5,5.6,21.1,18.3,0,60.6,74.6,19.7,5.6,18.3,36.6,45.1,54.9,11.3,21.1,12.7,90.1,9.9],\"type\":\"bar\",\"xaxis\":\"x3\",\"yaxis\":\"y3\"},{\"marker\":{\"color\":\"red\"},\"name\":\"Died (%)\",\"x\":[\"0-4\",\"5-8\",\"\\u003e8\",\"Spontaneous abortion\",\"Term pregnancy\",\"Ectopic pregnancy\",\"Molar pregnancy\",\"0-1\",\"2-3\",\"\\u003e3\",\"1,000 - 10,000\",\"10,001\\u2264 100,000\",\"\\u003e100,000\",\"I\",\"II\",\"III\",\"IV\",\"High Risk (7-12)\",\"Ultra-High Risk (\\u2265 13)\"],\"y\":[32.3,22.6,45.2,38.7,19.4,3.2,38.7,22.6,67.7,9.7,9.7,6.5,83.9,0,16.1,41.9,41.9,48.4,51.6],\"type\":\"bar\",\"xaxis\":\"x3\",\"yaxis\":\"y3\"},{\"marker\":{\"color\":\"green\"},\"name\":\"Alive (%)\",\"x\":[\"0-4\",\"5-8\",\"\\u003e8\",\"Spontaneous abortion\",\"Term pregnancy\",\"Ectopic pregnancy\",\"Molar pregnancy\",\"0-1\",\"2-3\",\"\\u003e3\",\"1,000 - 10,000\",\"10,001\\u2264 100,000\",\"\\u003e100,000\",\"I\",\"II\",\"III\",\"IV\",\"High Risk (7-12)\",\"Ultra-High Risk (\\u2265 13)\"],\"y\":[78.9,15.5,5.6,21.1,18.3,0,60.6,74.6,19.7,5.6,18.3,36.6,45.1,54.9,11.3,21.1,12.7,90.1,9.9],\"type\":\"bar\",\"xaxis\":\"x4\",\"yaxis\":\"y4\"},{\"marker\":{\"color\":\"red\"},\"name\":\"Died (%)\",\"x\":[\"0-4\",\"5-8\",\"\\u003e8\",\"Spontaneous abortion\",\"Term pregnancy\",\"Ectopic pregnancy\",\"Molar pregnancy\",\"0-1\",\"2-3\",\"\\u003e3\",\"1,000 - 10,000\",\"10,001\\u2264 100,000\",\"\\u003e100,000\",\"I\",\"II\",\"III\",\"IV\",\"High Risk (7-12)\",\"Ultra-High Risk (\\u2265 13)\"],\"y\":[32.3,22.6,45.2,38.7,19.4,3.2,38.7,22.6,67.7,9.7,9.7,6.5,83.9,0,16.1,41.9,41.9,48.4,51.6],\"type\":\"bar\",\"xaxis\":\"x4\",\"yaxis\":\"y4\"},{\"marker\":{\"color\":\"green\"},\"name\":\"Alive (%)\",\"x\":[\"0-4\",\"5-8\",\"\\u003e8\",\"Spontaneous abortion\",\"Term pregnancy\",\"Ectopic pregnancy\",\"Molar pregnancy\",\"0-1\",\"2-3\",\"\\u003e3\",\"1,000 - 10,000\",\"10,001\\u2264 100,000\",\"\\u003e100,000\",\"I\",\"II\",\"III\",\"IV\",\"High Risk (7-12)\",\"Ultra-High Risk (\\u2265 13)\"],\"y\":[78.9,15.5,5.6,21.1,18.3,0,60.6,74.6,19.7,5.6,18.3,36.6,45.1,54.9,11.3,21.1,12.7,90.1,9.9],\"type\":\"bar\",\"xaxis\":\"x5\",\"yaxis\":\"y5\"},{\"marker\":{\"color\":\"red\"},\"name\":\"Died (%)\",\"x\":[\"0-4\",\"5-8\",\"\\u003e8\",\"Spontaneous abortion\",\"Term pregnancy\",\"Ectopic pregnancy\",\"Molar pregnancy\",\"0-1\",\"2-3\",\"\\u003e3\",\"1,000 - 10,000\",\"10,001\\u2264 100,000\",\"\\u003e100,000\",\"I\",\"II\",\"III\",\"IV\",\"High Risk (7-12)\",\"Ultra-High Risk (\\u2265 13)\"],\"y\":[32.3,22.6,45.2,38.7,19.4,3.2,38.7,22.6,67.7,9.7,9.7,6.5,83.9,0,16.1,41.9,41.9,48.4,51.6],\"type\":\"bar\",\"xaxis\":\"x5\",\"yaxis\":\"y5\"},{\"marker\":{\"color\":\"green\"},\"name\":\"Alive (%)\",\"x\":[\"0-4\",\"5-8\",\"\\u003e8\",\"Spontaneous abortion\",\"Term pregnancy\",\"Ectopic pregnancy\",\"Molar pregnancy\",\"0-1\",\"2-3\",\"\\u003e3\",\"1,000 - 10,000\",\"10,001\\u2264 100,000\",\"\\u003e100,000\",\"I\",\"II\",\"III\",\"IV\",\"High Risk (7-12)\",\"Ultra-High Risk (\\u2265 13)\"],\"y\":[78.9,15.5,5.6,21.1,18.3,0,60.6,74.6,19.7,5.6,18.3,36.6,45.1,54.9,11.3,21.1,12.7,90.1,9.9],\"type\":\"bar\",\"xaxis\":\"x6\",\"yaxis\":\"y6\"},{\"marker\":{\"color\":\"red\"},\"name\":\"Died (%)\",\"x\":[\"0-4\",\"5-8\",\"\\u003e8\",\"Spontaneous abortion\",\"Term pregnancy\",\"Ectopic pregnancy\",\"Molar pregnancy\",\"0-1\",\"2-3\",\"\\u003e3\",\"1,000 - 10,000\",\"10,001\\u2264 100,000\",\"\\u003e100,000\",\"I\",\"II\",\"III\",\"IV\",\"High Risk (7-12)\",\"Ultra-High Risk (\\u2265 13)\"],\"y\":[32.3,22.6,45.2,38.7,19.4,3.2,38.7,22.6,67.7,9.7,9.7,6.5,83.9,0,16.1,41.9,41.9,48.4,51.6],\"type\":\"bar\",\"xaxis\":\"x6\",\"yaxis\":\"y6\"},{\"labels\":[\"Lungs\",\"Vagina\",\"Liver\",\"Brain\",\"Gastrointestinal tract\",\"Spine\"],\"name\":\"Alive, n=71\",\"values\":[20,5,2,3,3,0],\"type\":\"pie\",\"domain\":{\"x\":[0.55,1.0],\"y\":[0.9027777777777777,0.9999999999999999]}},{\"labels\":[\"Lungs\",\"Vagina\",\"Liver\",\"Brain\",\"Gastrointestinal tract\",\"Spine\"],\"name\":\"Died, n=31\",\"values\":[19,7,9,8,2,1],\"type\":\"pie\",\"domain\":{\"x\":[0.55,1.0],\"y\":[0.7222222222222222,0.8194444444444444]}},{\"labels\":[\"Lungs\",\"Vagina\",\"Liver\",\"Brain\",\"Gastrointestinal tract\",\"Spine\"],\"name\":\"Total, n=98\",\"values\":[39,12,11,11,5,1],\"type\":\"pie\",\"domain\":{\"x\":[0.55,1.0],\"y\":[0.5416666666666667,0.638888888888889]}}],                        {\"template\":{\"data\":{\"histogram2dcontour\":[{\"type\":\"histogram2dcontour\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"choropleth\":[{\"type\":\"choropleth\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}],\"histogram2d\":[{\"type\":\"histogram2d\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"heatmap\":[{\"type\":\"heatmap\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"heatmapgl\":[{\"type\":\"heatmapgl\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"contourcarpet\":[{\"type\":\"contourcarpet\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}],\"contour\":[{\"type\":\"contour\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"surface\":[{\"type\":\"surface\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"mesh3d\":[{\"type\":\"mesh3d\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}],\"scatter\":[{\"fillpattern\":{\"fillmode\":\"overlay\",\"size\":10,\"solidity\":0.2},\"type\":\"scatter\"}],\"parcoords\":[{\"type\":\"parcoords\",\"line\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scatterpolargl\":[{\"type\":\"scatterpolargl\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"bar\":[{\"error_x\":{\"color\":\"#2a3f5f\"},\"error_y\":{\"color\":\"#2a3f5f\"},\"marker\":{\"line\":{\"color\":\"#E5ECF6\",\"width\":0.5},\"pattern\":{\"fillmode\":\"overlay\",\"size\":10,\"solidity\":0.2}},\"type\":\"bar\"}],\"scattergeo\":[{\"type\":\"scattergeo\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scatterpolar\":[{\"type\":\"scatterpolar\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"histogram\":[{\"marker\":{\"pattern\":{\"fillmode\":\"overlay\",\"size\":10,\"solidity\":0.2}},\"type\":\"histogram\"}],\"scattergl\":[{\"type\":\"scattergl\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scatter3d\":[{\"type\":\"scatter3d\",\"line\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scattermapbox\":[{\"type\":\"scattermapbox\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scatterternary\":[{\"type\":\"scatterternary\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scattercarpet\":[{\"type\":\"scattercarpet\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"carpet\":[{\"aaxis\":{\"endlinecolor\":\"#2a3f5f\",\"gridcolor\":\"white\",\"linecolor\":\"white\",\"minorgridcolor\":\"white\",\"startlinecolor\":\"#2a3f5f\"},\"baxis\":{\"endlinecolor\":\"#2a3f5f\",\"gridcolor\":\"white\",\"linecolor\":\"white\",\"minorgridcolor\":\"white\",\"startlinecolor\":\"#2a3f5f\"},\"type\":\"carpet\"}],\"table\":[{\"cells\":{\"fill\":{\"color\":\"#EBF0F8\"},\"line\":{\"color\":\"white\"}},\"header\":{\"fill\":{\"color\":\"#C8D4E3\"},\"line\":{\"color\":\"white\"}},\"type\":\"table\"}],\"barpolar\":[{\"marker\":{\"line\":{\"color\":\"#E5ECF6\",\"width\":0.5},\"pattern\":{\"fillmode\":\"overlay\",\"size\":10,\"solidity\":0.2}},\"type\":\"barpolar\"}],\"pie\":[{\"automargin\":true,\"type\":\"pie\"}]},\"layout\":{\"autotypenumbers\":\"strict\",\"colorway\":[\"#636efa\",\"#EF553B\",\"#00cc96\",\"#ab63fa\",\"#FFA15A\",\"#19d3f3\",\"#FF6692\",\"#B6E880\",\"#FF97FF\",\"#FECB52\"],\"font\":{\"color\":\"#2a3f5f\"},\"hovermode\":\"closest\",\"hoverlabel\":{\"align\":\"left\"},\"paper_bgcolor\":\"white\",\"plot_bgcolor\":\"#E5ECF6\",\"polar\":{\"bgcolor\":\"#E5ECF6\",\"angularaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"},\"radialaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"}},\"ternary\":{\"bgcolor\":\"#E5ECF6\",\"aaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"},\"baxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"},\"caxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"}},\"coloraxis\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"colorscale\":{\"sequential\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]],\"sequentialminus\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]],\"diverging\":[[0,\"#8e0152\"],[0.1,\"#c51b7d\"],[0.2,\"#de77ae\"],[0.3,\"#f1b6da\"],[0.4,\"#fde0ef\"],[0.5,\"#f7f7f7\"],[0.6,\"#e6f5d0\"],[0.7,\"#b8e186\"],[0.8,\"#7fbc41\"],[0.9,\"#4d9221\"],[1,\"#276419\"]]},\"xaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\",\"title\":{\"standoff\":15},\"zerolinecolor\":\"white\",\"automargin\":true,\"zerolinewidth\":2},\"yaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\",\"title\":{\"standoff\":15},\"zerolinecolor\":\"white\",\"automargin\":true,\"zerolinewidth\":2},\"scene\":{\"xaxis\":{\"backgroundcolor\":\"#E5ECF6\",\"gridcolor\":\"white\",\"linecolor\":\"white\",\"showbackground\":true,\"ticks\":\"\",\"zerolinecolor\":\"white\",\"gridwidth\":2},\"yaxis\":{\"backgroundcolor\":\"#E5ECF6\",\"gridcolor\":\"white\",\"linecolor\":\"white\",\"showbackground\":true,\"ticks\":\"\",\"zerolinecolor\":\"white\",\"gridwidth\":2},\"zaxis\":{\"backgroundcolor\":\"#E5ECF6\",\"gridcolor\":\"white\",\"linecolor\":\"white\",\"showbackground\":true,\"ticks\":\"\",\"zerolinecolor\":\"white\",\"gridwidth\":2}},\"shapedefaults\":{\"line\":{\"color\":\"#2a3f5f\"}},\"annotationdefaults\":{\"arrowcolor\":\"#2a3f5f\",\"arrowhead\":0,\"arrowwidth\":1},\"geo\":{\"bgcolor\":\"white\",\"landcolor\":\"#E5ECF6\",\"subunitcolor\":\"white\",\"showland\":true,\"showlakes\":true,\"lakecolor\":\"white\"},\"title\":{\"x\":0.05},\"mapbox\":{\"style\":\"light\"}}},\"xaxis\":{\"anchor\":\"y\",\"domain\":[0.0,0.45]},\"yaxis\":{\"anchor\":\"x\",\"domain\":[0.9027777777777777,0.9999999999999999]},\"xaxis2\":{\"anchor\":\"y2\",\"domain\":[0.0,0.45]},\"yaxis2\":{\"anchor\":\"x2\",\"domain\":[0.7222222222222222,0.8194444444444444]},\"xaxis3\":{\"anchor\":\"y3\",\"domain\":[0.0,0.45]},\"yaxis3\":{\"anchor\":\"x3\",\"domain\":[0.5416666666666667,0.638888888888889]},\"xaxis4\":{\"anchor\":\"y4\",\"domain\":[0.0,0.45]},\"yaxis4\":{\"anchor\":\"x4\",\"domain\":[0.3611111111111111,0.4583333333333333]},\"xaxis5\":{\"anchor\":\"y5\",\"domain\":[0.0,0.45]},\"yaxis5\":{\"anchor\":\"x5\",\"domain\":[0.18055555555555555,0.2777777777777778]},\"xaxis6\":{\"anchor\":\"y6\",\"domain\":[0.0,0.45]},\"yaxis6\":{\"anchor\":\"x6\",\"domain\":[0.0,0.09722222222222222]},\"annotations\":[{\"font\":{\"size\":16},\"showarrow\":false,\"text\":\"Last pregnancy interval (months)\",\"x\":0.225,\"xanchor\":\"center\",\"xref\":\"paper\",\"y\":0.9999999999999999,\"yanchor\":\"bottom\",\"yref\":\"paper\"},{\"font\":{\"size\":16},\"showarrow\":false,\"text\":\"Antecedent pregnancy\",\"x\":0.775,\"xanchor\":\"center\",\"xref\":\"paper\",\"y\":0.9999999999999999,\"yanchor\":\"bottom\",\"yref\":\"paper\"},{\"font\":{\"size\":16},\"showarrow\":false,\"text\":\"ECOG status\",\"x\":0.225,\"xanchor\":\"center\",\"xref\":\"paper\",\"y\":0.8194444444444444,\"yanchor\":\"bottom\",\"yref\":\"paper\"},{\"font\":{\"size\":16},\"showarrow\":false,\"text\":\"Pretreatment HCG levels\",\"x\":0.775,\"xanchor\":\"center\",\"xref\":\"paper\",\"y\":0.8194444444444444,\"yanchor\":\"bottom\",\"yref\":\"paper\"},{\"font\":{\"size\":16},\"showarrow\":false,\"text\":\"FIGO stage\",\"x\":0.225,\"xanchor\":\"center\",\"xref\":\"paper\",\"y\":0.638888888888889,\"yanchor\":\"bottom\",\"yref\":\"paper\"},{\"font\":{\"size\":16},\"showarrow\":false,\"text\":\"WHO prognostic score\",\"x\":0.775,\"xanchor\":\"center\",\"xref\":\"paper\",\"y\":0.638888888888889,\"yanchor\":\"bottom\",\"yref\":\"paper\"},{\"font\":{\"size\":16},\"showarrow\":false,\"text\":\"Sites of Metastasis (Alive)\",\"x\":0.225,\"xanchor\":\"center\",\"xref\":\"paper\",\"y\":0.4583333333333333,\"yanchor\":\"bottom\",\"yref\":\"paper\"},{\"font\":{\"size\":16},\"showarrow\":false,\"text\":\"Sites of Metastasis (Died)\",\"x\":0.775,\"xanchor\":\"center\",\"xref\":\"paper\",\"y\":0.4583333333333333,\"yanchor\":\"bottom\",\"yref\":\"paper\"},{\"font\":{\"size\":16},\"showarrow\":false,\"text\":\"Sites of Metastasis (Total)\",\"x\":0.225,\"xanchor\":\"center\",\"xref\":\"paper\",\"y\":0.2777777777777778,\"yanchor\":\"bottom\",\"yref\":\"paper\"}],\"title\":{\"text\":\"Clinical Characteristics of Patients with High and Ultrahigh Risk GTN\"},\"height\":3000,\"showlegend\":true},                        {\"responsive\": true}                    ).then(function(){\n",
+              "                            \n",
+              "var gd = document.getElementById('54112b7c-b011-4f10-bd4a-96541ca92aa8');\n",
+              "var x = new MutationObserver(function (mutations, observer) {{\n",
+              "        var display = window.getComputedStyle(gd).display;\n",
+              "        if (!display || display === 'none') {{\n",
+              "            console.log([gd, 'removed!']);\n",
+              "            Plotly.purge(gd);\n",
+              "            observer.disconnect();\n",
+              "        }}\n",
+              "}});\n",
+              "\n",
+              "// Listen for the removal of the full notebook cells\n",
+              "var notebookContainer = gd.closest('#notebook-container');\n",
+              "if (notebookContainer) {{\n",
+              "    x.observe(notebookContainer, {childList: true});\n",
+              "}}\n",
+              "\n",
+              "// Listen for the clearing of the current output cell\n",
+              "var outputEl = gd.closest('.output');\n",
+              "if (outputEl) {{\n",
+              "    x.observe(outputEl, {childList: true});\n",
+              "}}\n",
+              "\n",
+              "                        })                };                            </script>        </div>\n",
+              "</body>\n",
+              "</html>"
+            ]
+          },
+          "metadata": {}
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!pip install qrcode[pil]\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "6RoQb6yQ8dDJ",
+        "outputId": "3e537a54-86ca-4571-bc28-1ac5fbd256f2"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Collecting qrcode[pil]\n",
+            "  Downloading qrcode-7.4.2-py3-none-any.whl (46 kB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m46.2/46.2 kB\u001b[0m \u001b[31m1.5 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hRequirement already satisfied: typing-extensions in /usr/local/lib/python3.10/dist-packages (from qrcode[pil]) (4.10.0)\n",
+            "Collecting pypng (from qrcode[pil])\n",
+            "  Downloading pypng-0.20220715.0-py3-none-any.whl (58 kB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m58.1/58.1 kB\u001b[0m \u001b[31m5.1 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hRequirement already satisfied: pillow>=9.1.0 in /usr/local/lib/python3.10/dist-packages (from qrcode[pil]) (9.4.0)\n",
+            "Installing collected packages: pypng, qrcode\n",
+            "Successfully installed pypng-0.20220715.0 qrcode-7.4.2\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import qrcode\n",
+        "\n",
+        "# URL to create QR code for\n",
+        "url = 'file:///C:/Users/Kimbley/Downloads/sociodemographic_characteristics.html'\n",
+        "\n",
+        "# Create a QR code instance\n",
+        "qr = qrcode.QRCode(\n",
+        "    version=1,\n",
+        "    error_correction=qrcode.constants.ERROR_CORRECT_L,\n",
+        "    box_size=10,\n",
+        "    border=4,\n",
+        ")\n",
+        "\n",
+        "# Add URL to the QR code\n",
+        "qr.add_data(url)\n",
+        "qr.make(fit=True)\n",
+        "\n",
+        "# Create an image from the QR code instance\n",
+        "img = qr.make_image(fill_color=\"black\", back_color=\"white\")\n",
+        "\n",
+        "# Save the image\n",
+        "img.save(\"sociodemographic_characteristics_qr.png\")\n",
+        "\n",
+        "# Display the image\n",
+        "img.show()\n"
+      ],
+      "metadata": {
+        "id": "R4qST29L8q4l"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import qrcode\n",
+        "\n",
+        "# URL of the hosted visualization\n",
+        "url = 'https://your-hosted-visualization-url'\n",
+        "\n",
+        "# Generate the QR code\n",
+        "qr = qrcode.make(url)\n",
+        "qr.save('visualization_qr.png')\n"
+      ],
+      "metadata": {
+        "id": "gx56BlBE_6Wl"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!pip install fpdf2\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "8satyYKrCcBa",
+        "outputId": "b49aae9d-b520-4bf3-bb27-59f0cff490da"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Collecting fpdf2\n",
+            "  Downloading fpdf2-2.7.8-py2.py3-none-any.whl (203 kB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m203.7/203.7 kB\u001b[0m \u001b[31m4.1 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hRequirement already satisfied: defusedxml in /usr/local/lib/python3.10/dist-packages (from fpdf2) (0.7.1)\n",
+            "Requirement already satisfied: Pillow!=9.2.*,>=6.2.2 in /usr/local/lib/python3.10/dist-packages (from fpdf2) (9.4.0)\n",
+            "Requirement already satisfied: fonttools>=4.34.0 in /usr/local/lib/python3.10/dist-packages (from fpdf2) (4.50.0)\n",
+            "Installing collected packages: fpdf2\n",
+            "Successfully installed fpdf2-2.7.8\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
